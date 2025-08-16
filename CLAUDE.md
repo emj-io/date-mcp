@@ -20,11 +20,16 @@ This project uses Go and the mark3labs/mcp-go library for MCP implementation.
 ├── internal/tools/     # Tool implementations
 │   ├── date.go        # get_current_date tool implementation
 │   └── date_test.go   # Unit tests for date tool
+├── .github/           # GitHub Actions workflows and templates
+│   ├── workflows/     # CI/CD workflows
+│   └── ISSUE_TEMPLATE/ # Issue templates
 ├── bin/               # Build output (gitignored)
 ├── go.mod             # Go module definition
 ├── go.sum             # Dependency checksums
 ├── Makefile           # Build automation and common tasks
+├── .goreleaser.yml    # Release automation configuration
 ├── CLAUDE.md          # This file
+├── CONTRIBUTING.md    # Contribution guidelines
 ├── LICENSE            # MIT license
 └── README.md          # Project documentation
 ```
@@ -65,9 +70,36 @@ Tools are implemented in the `internal/tools` package following this pattern:
 2. Handler function (e.g., `HandleGetCurrentDate()`) that processes requests
 3. Registration in main.go using `s.AddTool()`
 
+## CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+### Workflows:
+- **CI** (`.github/workflows/ci.yml`): Runs on all pushes and PRs
+  - Tests on Go 1.24 and 1.25 across Linux, macOS, and Windows
+  - Runs linting, testing, and builds
+  - Uploads coverage reports and build artifacts
+
+- **Security** (`.github/workflows/security.yml`): Multi-trigger security scanning
+  - Pull requests: Prevents vulnerabilities from entering codebase
+  - Push to main: Immediate validation after merges
+  - Weekly schedule: Catches newly disclosed CVEs
+  - Uses Gosec, OSV-Scanner, and govulncheck
+
+- **Release** (`.github/workflows/release.yml`): Automated releases
+  - Triggered by version tags (v*)
+  - Cross-platform builds using GoReleaser
+  - Security checks before release
+  - Creates GitHub releases with binaries
+
+### Dependencies:
+- **Dependabot** (`.github/dependabot.yml`): Weekly dependency updates
+- Automatically creates PRs for Go module and GitHub Actions updates
+
 ## Testing
 
 Tests use the standard Go testing framework:
 - Unit tests verify tool logic and output formats
 - Integration tests verify server setup and tool registration
 - Type assertions use mcp.AsTextContent() for accessing text content
+- CI runs tests on multiple Go versions and operating systems

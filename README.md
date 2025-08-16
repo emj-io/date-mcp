@@ -1,5 +1,10 @@
 # date-mcp
 
+[![CI](https://github.com/emj-io/date-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/emj-io/date-mcp/actions/workflows/ci.yml)
+[![Security](https://github.com/emj-io/date-mcp/actions/workflows/security.yml/badge.svg)](https://github.com/emj-io/date-mcp/actions/workflows/security.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/emj-io/date-mcp)](https://goreportcard.com/report/github.com/emj-io/date-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A Model Context Protocol (MCP) server that provides date-related tools for AI applications.
 
 ## Overview
@@ -126,6 +131,25 @@ go test ./cmd/server/       # Server integration tests
 - `cmd/server/` - Main server entry point
 - `internal/tools/` - Tool implementations
 - Tests are co-located with source files
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Workflow
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests (`make test`)
+5. Run linting (`make lint`)
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+### Security
+
+Please report security vulnerabilities by emailing the maintainers directly rather than opening public issues.
 
 ## License
 
