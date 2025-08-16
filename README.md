@@ -13,26 +13,39 @@ This MCP server exposes date and time functionality through the Model Context Pr
   - `unix`: Unix timestamp
   - `date-only`: YYYY-MM-DD format
 
-## Installation
+## Quick Start
 
 ```bash
 git clone https://github.com/ericjohnson/date-mcp
 cd date-mcp
-go mod download
+make all    # Download deps, run tests, and build
+make run    # Run the server
 ```
 
-## Building
+## Development Commands
+
+This project uses a Makefile for common development tasks:
 
 ```bash
-go build -o date-mcp ./cmd/server
+make deps     # Download and tidy dependencies
+make build    # Build the MCP server binary
+make test     # Run all tests
+make run      # Build and run the server
+make clean    # Remove build artifacts
+make lint     # Run golangci-lint (if available)
+make all      # Full build pipeline (deps, test, build)
+make help     # Show all available commands
 ```
 
-## Running
+### Alternative: Direct Go Commands
 
-The MCP server runs via stdio transport:
+If you prefer to use Go commands directly:
 
 ```bash
-./date-mcp
+go mod download                    # Download dependencies
+go build -o bin/date-mcp ./cmd/server  # Build
+go test ./...                     # Test
+./bin/date-mcp                    # Run
 ```
 
 ## Integration
@@ -41,7 +54,7 @@ The MCP server runs via stdio transport:
 
 1. **Build the server** (if not already built):
    ```bash
-   go build -o date-mcp ./cmd/server
+   make build
    ```
 
 2. **Create MCP configuration file**:
@@ -51,7 +64,7 @@ The MCP server runs via stdio transport:
    {
      "mcpServers": {
        "date-mcp": {
-         "command": "./date-mcp",
+         "command": "./bin/date-mcp",
          "args": []
        }
      }
@@ -77,7 +90,7 @@ Add to your Claude Desktop MCP configuration:
 {
   "mcpServers": {
     "date-mcp": {
-      "command": "./date-mcp",
+      "command": "./bin/date-mcp",
       "args": []
     }
   }
@@ -98,13 +111,14 @@ Once integrated with an MCP client, you can use the date tool:
 
 Run all tests:
 ```bash
-go test ./...
+make test
 ```
 
-Run specific test suites:
+Or use Go directly:
 ```bash
-go test ./internal/tools/    # Tool unit tests
-go test ./cmd/server/        # Server integration tests
+go test ./...               # All tests
+go test ./internal/tools/   # Tool unit tests  
+go test ./cmd/server/       # Server integration tests
 ```
 
 ### Project Structure

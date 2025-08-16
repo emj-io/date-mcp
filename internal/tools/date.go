@@ -10,7 +10,7 @@ import (
 
 func GetCurrentDateTool() mcp.Tool {
 	return mcp.NewTool("get_current_date",
-		mcp.WithDescription("Get the current date and time"),
+		mcp.WithDescription("Get the current date and time. Use this when you need to know what time it is, what day it is, the current date, today's date, or any time-related information"),
 		mcp.WithString("format",
 			mcp.Description("Date format (optional). Defaults to RFC3339. Common formats: 'rfc3339', 'unix', 'date-only'"),
 		),

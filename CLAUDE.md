@@ -20,8 +20,10 @@ This project uses Go and the mark3labs/mcp-go library for MCP implementation.
 ├── internal/tools/     # Tool implementations
 │   ├── date.go        # get_current_date tool implementation
 │   └── date_test.go   # Unit tests for date tool
+├── bin/               # Build output (gitignored)
 ├── go.mod             # Go module definition
 ├── go.sum             # Dependency checksums
+├── Makefile           # Build automation and common tasks
 ├── CLAUDE.md          # This file
 ├── LICENSE            # MIT license
 └── README.md          # Project documentation
@@ -39,12 +41,22 @@ The MCP server exposes tools through the Model Context Protocol:
 
 ## Commands
 
-- `go build ./cmd/server` - Build the MCP server
+### Primary (using Makefile):
+- `make build` - Build the MCP server
+- `make test` - Run all tests with verbose output
+- `make run` - Build and run the MCP server
+- `make deps` - Download and tidy dependencies
+- `make clean` - Remove build artifacts
+- `make lint` - Run golangci-lint (if available)
+- `make all` - Full build pipeline (deps, test, build)
+- `make help` - Show all available commands
+
+### Alternative (direct Go commands):
+- `go build -o bin/date-mcp ./cmd/server` - Build the MCP server
 - `go test ./...` - Run all tests
 - `go test ./internal/tools/` - Run tool unit tests
 - `go test ./cmd/server/` - Run server integration tests
 - `go mod tidy` - Clean up dependencies
-- `./server` - Run the MCP server (after building)
 
 ## Tool Implementation
 
