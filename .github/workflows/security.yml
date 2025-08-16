@@ -47,7 +47,7 @@ jobs:
     
     - name: Run OSV-Scanner for dependency vulnerabilities
       run: |
-        curl -sSfL https://raw.githubusercontent.com/google/osv-scanner/main/scripts/install.sh | sh -s -- -b /usr/local/bin
+        go install github.com/google/osv-scanner/cmd/osv-scanner@latest
         osv-scanner --format=sarif --output=osv-results.sarif --recursive ./
       continue-on-error: true
     
