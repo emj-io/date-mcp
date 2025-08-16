@@ -1,0 +1,51 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    # Core linters
+    - errcheck      # Check for unhandled errors
+    - gosimple      # Simplify code
+    - govet         # Go vet
+    - ineffassign   # Detect ineffectual assignments
+    - staticcheck   # Staticcheck SA
+    - typecheck     # Type checking
+    - unused        # Check for unused constants, variables, functions and types
+    
+    # Style and formatting
+    - gofmt         # Check if code is gofmt-ed
+    - goimports     # Check imports formatting
+    - misspell      # Check for spelling mistakes
+    - whitespace    # Check for unnecessary whitespace
+    
+    # Code quality
+    - dupl          # Check for code duplication
+    - goconst       # Check for repeated strings that could be constants
+    - godot         # Check if comments end in a period
+    - gosec         # Security checker
+    - revive        # Fast, configurable, extensible, flexible linter
+
+linters-settings:
+  revive:
+    rules:
+      - name: exported
+        disabled: true  # Allow unexported functions in main and tools packages
+  
+  gosec:
+    excludes:
+      - G104  # Allow some unhandled errors (like fmt.Print)
+
+issues:
+  exclude-rules:
+    # Allow long variable names for better readability
+    - path: _test\.go
+      linters:
+        - dupl
+        - gosec
+    
+    # Allow fmt.Print* functions without error checking in main
+    - path: cmd/server/main\.go
+      linters:
+        - errcheck
+      text: "fmt.Print"
