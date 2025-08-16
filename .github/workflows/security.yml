@@ -1,0 +1,85 @@
+name: Security
+
+on:
+  # Run on pull requests to prevent vulnerabilities from entering codebase
+  pull_request:
+    branches: [ main ]
+  
+  # Run on pushes to main for immediate validation after merges
+  push:
+    branches: [ main ]
+  
+  # Weekly scheduled runs to catch newly disclosed CVEs in existing dependencies
+  schedule:
+    - cron: '0 12 * * 1'  # Every Monday at 12:00 UTC
+  
+  # Manual trigger for on-demand security checks
+  workflow_dispatch:
+
+jobs:
+  vulnerability-scan:
+    name: Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.25
+        cache: true
+    
+    - name: Download dependencies
+      run: make deps
+    
+    - name: Run Gosec Security Scanner
+      uses: securego/gosec@master
+      with:
+        args: '-no-fail -fmt sarif -out gosec-results.sarif ./...'
+    
+    - name: Upload Gosec results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: gosec-results.sarif
+    
+    - name: Run OSV-Scanner for dependency vulnerabilities
+      run: |
+        go install github.com/google/osv-scanner/cmd/osv-scanner@latest
+        osv-scanner --format=sarif --output=osv-results.sarif --recursive ./
+      continue-on-error: true
+    
+    - name: Upload OSV-Scanner results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: osv-results.sarif
+
+  nancy-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.25
+        cache: true
+    
+    - name: Download dependencies
+      run: make deps
+    
+    - name: Run Nancy for dependency vulnerabilities
+      run: |
+        go list -json -deps ./... | nancy sleuth
+      continue-on-error: true
+    
+    - name: Run Go vulnerability check
+      run: |
+        go install golang.org/x/vuln/cmd/govulncheck@latest
+        govulncheck ./...
