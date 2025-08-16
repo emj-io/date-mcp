@@ -32,17 +32,20 @@ lint:
 	@if command -v golangci-lint >/dev/null 2>&1; then \
 		echo "Running golangci-lint..."; \
 		golangci-lint run; \
-	elif [ -x "$$HOME/go/bin/golangci-lint" ]; then \
+	elif [ -x "$$(go env GOPATH)/bin/golangci-lint" ]; then \
 		echo "Running golangci-lint from GOPATH..."; \
-		$$HOME/go/bin/golangci-lint run; \
+		"$$(go env GOPATH)/bin/golangci-lint" run; \
 	else \
 		echo "golangci-lint not found, running basic Go tools..."; \
 		echo "Running go fmt..."; \
-		gofmt -d . | tee /tmp/gofmt.out; \
-		if [ -s /tmp/gofmt.out ]; then \
+		GOFMT_OUT=$$(mktemp); \
+		gofmt -d . | tee "$$GOFMT_OUT"; \
+		if [ -s "$$GOFMT_OUT" ]; then \
+			rm -f "$$GOFMT_OUT"; \
 			echo "❌ gofmt found formatting issues"; \
 			exit 1; \
 		fi; \
+		rm -f "$$GOFMT_OUT"; \
 		echo "Running go vet..."; \
 		go vet ./...; \
 		echo "✅ Basic linting passed. Install golangci-lint for comprehensive checks:"; \
